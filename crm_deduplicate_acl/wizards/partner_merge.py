@@ -8,18 +8,18 @@ from openerp import SUPERUSER_ID, api, models
 class BasePartnerMergeAutomaticWizard(models.TransientModel):
     _inherit = "base.partner.merge.automatic.wizard"
 
-    @api.cr_uid_context
-    def _merge(self, cr, uid, partner_ids, dst_partner=None, context=None):
+    @api.multi
+    def _merge(self, partner_ids, dst_partner=None):
         """Allow non-admins to merge partners with different emails."""
         # Know if user has unrestricted access
-        group_unrestricted = self.pool["ir.model.data"].xmlid_to_object(
-            cr, uid, "crm_deduplicate_acl.group_unrestricted", context)
-        user = self.pool["res.users"].browse(cr, uid, uid, context)
+        group_unrestricted = self.env["ir.model.data"].xmlid_to_object(
+            "crm_deduplicate_acl.group_unrestricted")
 
         # Run as admin if so
         return super(BasePartnerMergeAutomaticWizard, self)._merge(
-            cr,
-            SUPERUSER_ID if group_unrestricted in user.groups_id else uid,
-            partner_ids,
-            dst_partner,
-            context)
+            self.env.cr,
+            SUPERUSER_ID if group_unrestricted.id
+                            in self.env.user.groups_id.ids else self.env.uid,
+            partner_ids=partner_ids,
+            dst_partner=dst_partner,
+            context=self.env.context)
