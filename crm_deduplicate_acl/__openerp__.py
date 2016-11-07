@@ -4,7 +4,7 @@
 {
     "name": "Deduplicate Contacts ACL",
     "summary": "Contact deduplication with fine-grained permission control",
-    "version": "8.0.1.0.0",
+    "version": "9.0.1.0.0",
     "category": "Tools",
     "website": "http://www.antiun.com",
     "author": "Antiun Ingeniería S.L., Odoo Community Association (OCA)",
